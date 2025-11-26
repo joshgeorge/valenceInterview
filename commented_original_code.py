@@ -85,6 +85,11 @@ class Prompt(models.Model):
         context = snippets | variables
         
         # Render the Jinja2 template with the combined context
+
+        # Problem
+            # In the current implementation, Jinja2 is taking in the snippet and treating the {{variable}} as if it is a string
+            # This is what causes results to look like Hi {{ name }}, how can I help you?
+            # In the corrected file, we will go over how to remedy this
         return jinja2.Template(message).render(context)
 
     def __str__(self):
