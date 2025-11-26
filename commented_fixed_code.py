@@ -105,6 +105,12 @@ class Prompt(models.Model):
         # Second pass: Render variables into the expanded template
             # This processes any {{ variable_name }} that came from snippets or the original template
         final_output = jinja2.Template(intermediate_template).render(variables)
+
+        # Further Considerations:
+            # Current implantation does not support nesting (one variable referring to another variable). 
+            # It currently segments the render function into 2 passes (one that renders the snippet and one that subsequently renders the variable).
+            # If you wanted to address the nesting scenario, you could add more passes in accordance to how deeply you want it to nest.  
+            # At some point this should be limited so it does not keep nesting into infinity. 
         
         return final_output
 
