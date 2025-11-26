@@ -78,17 +78,32 @@ class Prompt(models.Model):
         Returns:
             Fully rendered string with all variables substituted
         """
+        # What was the issue in the initial code?
+
+            # Jinja2 only does one-pass rendering. Once it substitutes a variable's value, it doesn't re-parse that value looking for more template syntax. 
+            # This is actually a security feature in most templating engines to prevent template injection attacks.
+
+        # Solution Approach
+        
+            # We need to do two-pass rendering:
+                # First pass: Render snippets into the template
+                # Second pass: Render variables into the result
+    
+            # This ensures that varriables inside snippets work (our goal) & variables in the main prompt work (existing behavior)
+
+        # Implementation 
+        
         # Two-pass rendering to support variables inside snippets
         
         # First pass: Render snippets into the template
-        # Fetch all Snippet objects and convert to a dict {name: content}
-        # This allows templates to reference snippets like {{ greeting_text }}
-        # and expands {{ snippet_name }} with snippet content
+            # Fetch all Snippet objects and convert to a dict {name: content}
+            # This allows templates to reference snippets like {{ greeting_text }}
+            # and expands {{ snippet_name }} with snippet content
         snippets = dict([(s.name, s.content) for s in Snippet.objects.all()])
         intermediate_template = jinja2.Template(message).render(snippets)
         
         # Second pass: Render variables into the expanded template
-        # This processes any {{ variable_name }} that came from snippets or the original template
+            # This processes any {{ variable_name }} that came from snippets or the original template
         final_output = jinja2.Template(intermediate_template).render(variables)
         
         return final_output
